@@ -1,0 +1,20 @@
+{
+  "//": [
+    "Rename this sample file to package.json to use on your project.",
+    "The sample-package.json file will be overwritten in updates/reinstalls."
+  ],
+  "name": "sample-node-project",
+  "version": "0.0.1",
+  "description": "node part of the project",
+  "main": "main.js",
+  "author": "janeasystems",
+  "license": "",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "express-validator": "^5.3.0",
+    "mongoose": "^5.3.11"
+  }
+}

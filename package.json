@@ -1,19 +1,27 @@
 {
   "name": "empty-project-template",
-  "main": "node_modules/expo/AppEntry.js",
   "private": true,
+  "main" : "App.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "eject": "expo eject"
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios"
   },
   "dependencies": {
-    "expo": "^31.0.2",
+    "@remobile/react-native-toast": "^1.0.7",
+    "body-parser": "^1.18.3",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "express-validator": "^5.3.0",
+    "iconv-lite": "^0.4.24",
+    "mongoose": "^5.3.11",
+    "nodejs-mobile-react-native": "^0.3.1",
     "react": "16.5.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz"
+    "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
+    "react-native-bluetooth-serial": "^1.0.0-rc1"
   },
   "devDependencies": {
-    "babel-preset-expo": "^5.0.0"
+    "concurrently": "^4.0.1"
   }
 }
