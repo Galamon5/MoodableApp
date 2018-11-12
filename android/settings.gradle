@@ -1,0 +1,3 @@
+rootProject.name = 'MoodApp'
+
+include ':app'
