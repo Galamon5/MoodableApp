@@ -74,12 +74,21 @@ class MoodBluetooth extends Component {
       BluetoothSerial.list()
     ])
     .then((values) => {
+      alert(values);
       const [ isEnabled, devices ] = values
       this.setState({ isEnabled, devices })
+      alert(devices[0])
     })
 
-    BluetoothSerial.on('bluetoothEnabled', () => Toast.showShortBottom('Bluetooth enabled'))
-    BluetoothSerial.on('bluetoothDisabled', () => Toast.showShortBottom('Bluetooth disabled'))
+    BluetoothSerial.on('bluetoothEnabled', () => {
+      Toast.showShortBottom('Bluetooth Activado');
+      this.setState({ isEnabled: true });
+
+      })
+    BluetoothSerial.on('bluetoothDisabled', () => {
+      Toast.showShortBottom('Bluetooth desactivado')
+      this.setState({ isEnabled: false });
+    })
     BluetoothSerial.on('error', (err) => console.log(`Error: ${err.message}`))
     BluetoothSerial.on('connectionLost', () => {
       if (this.state.device) {
@@ -94,9 +103,7 @@ class MoodBluetooth extends Component {
    * request enable of bluetooth from user
    */
   requestEnable () {
-    BluetoothSerial.requestEnable()
-    .then((res) => this.setState({ isEnabled: true }))
-    .catch((err) => Toast.showShortBottom(err.message))
+    Toast.showShortBottom('Porfavor activa tu bluetooth');
   }
 
   /**
@@ -104,9 +111,7 @@ class MoodBluetooth extends Component {
    * enable bluetooth on device
    */
   enable () {
-    BluetoothSerial.enable()
-    .then((res) => this.setState({ isEnabled: true }))
-    .catch((err) => Toast.showShortBottom(err.message))
+    this.setState({ isEnabled: true })
   }
 
   /**
@@ -114,9 +119,8 @@ class MoodBluetooth extends Component {
    * disable bluetooth on device
    */
   disable () {
-    BluetoothSerial.disable()
-    .then((res) => this.setState({ isEnabled: false }))
-    .catch((err) => Toast.showShortBottom(err.message))
+    //BluetoothSerial.disable()
+    this.setState({ isEnabled: false })
   }
 
   /**
@@ -263,28 +267,29 @@ class MoodBluetooth extends Component {
     return (
       <View style={{ flex: 1 }}>
         <View style={styles.topBar}>
-          <Text style={styles.heading}>Bluetooth Serial Example</Text>
-          {Platform.OS === 'android'
+          <Text style={styles.heading}>Moodable</Text>
+          {Platform.OS === 'ios'
           ? (
             <View style={styles.enableInfoWrapper}>
               <Text style={{ fontSize: 12, color: '#FFFFFF' }}>
-                {this.state.isEnabled ? 'disable' : 'enable'}
+                {this.state.isEnabled ? 'Desactivado' : 'Activado'}
               </Text>
               <Switch
                 onValueChange={this.toggleBluetooth.bind(this)}
-                value={this.state.isEnabled} />
+                value={this.state.isEnabled}
+                disabled={true}/>
             </View>
           ) : null}
         </View>
 
-        {Platform.OS === 'android'
+        {Platform.OS === 'ios'
         ? (
           <View style={[styles.topBar, { justifyContent: 'center', paddingHorizontal: 0 }]}>
             <TouchableOpacity style={[styles.tab, this.state.section === 0 && activeTabStyle]} onPress={() => this.setState({ section: 0 })}>
-              <Text style={{ fontSize: 14, color: '#FFFFFF' }}>PAIRED DEVICES</Text>
+              <Text style={{ fontSize: 14, color: '#FFFFFF' }}>Dispositivos Mood</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.tab, this.state.section === 1 && activeTabStyle]} onPress={() => this.setState({ section: 1 })}>
-              <Text style={{ fontSize: 14, color: '#FFFFFF' }}>UNPAIRED DEVICES</Text>
+              <Text style={{ fontSize: 14, color: '#FFFFFF' }}>Dispositivos no apareados</Text>
             </TouchableOpacity>
           </View>
         ) : null}
@@ -313,13 +318,13 @@ class MoodBluetooth extends Component {
           <ScrollView
             horizontal
             contentContainerStyle={styles.fixedFooter}>
-            {Platform.OS === 'android' && this.state.section === 1
+            {Platform.OS === 'ios' && this.state.section === 1
             ? (
               <Button
                 title={this.state.discovering ? '... Discovering' : 'Discover devices'}
                 onPress={this.discoverUnpaired.bind(this)} />
             ) : null}
-            {Platform.OS === 'android' && !this.state.isEnabled
+            {Platform.OS === 'ios' && !this.state.isEnabled
             ? (
               <Button
                 title='Request enable'
