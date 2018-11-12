@@ -137,6 +137,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-ble-plx')
     compile project(':react-native-bluetooth-serial')
     compile project(':@remobile_react-native-toast')
     implementation fileTree(dir: "libs", include: ["*.jar"])

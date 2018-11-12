@@ -3,6 +3,7 @@ package com.moodapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.polidea.reactnativeble.BlePackage;
 import com.rusel.RCTBluetoothSerial.RCTBluetoothSerialPackage;
 import com.remobile.toast.RCTToastPackage;
 import com.facebook.react.ReactNativeHost;
@@ -25,6 +26,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new BlePackage(),
             new RCTBluetoothSerialPackage(),
             new RCTToastPackage()
       );
