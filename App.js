@@ -3,12 +3,13 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  SafeAreaView,
+  View,
   FlatList,
   Platform,
   Button
 } from "react-native";
-//import { BleManager, Device, BleError, LogLevel } from "react-native-ble-plx";
+import { List, ListItem } from "react-native-elements";
+import { BleManager, Device, BleError, LogLevel } from "react-native-ble-plx";
 
 type Props = {};
 
@@ -31,68 +32,86 @@ export default class App extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      text: ['HOla','AMigos']
+      text: []
     };
   }
-  //
-  // componentDidMount() {
-  //   const manager = new BleManager();
-  //   manager.onStateChange(newState => {
-  //     if (newState != "PoweredOn") return;
-  //     this._log("Started scanning...");
-  //     manager.startDeviceScan(
-  //       null,
-  //       {
-  //         allowDuplicates: true
-  //       },
-  //       (error, device) => {
-  //         if (error) {
-  //           this._logError("SCAN", error);
-  //           return;
-  //         }
-  //         this._log("Device: " + device.name, device);
-  //       }
-  //     );
-  //   }, true);
-  // }
-  //
-  // _log = (text: string, ...args) => {
-  //   const message = "[" + Date.now() % 10000 + "] " + text;
-  //   this.setState({
-  //     text: [message, ...this.state.text]
-  //   });
-  // };
-  //
-  // _logError = (tag: string, error: BleError) => {
-  //   this._log(
-  //     tag +
-  //       "ERROR(" +
-  //       error.errorCode +
-  //       "): " +
-  //       error.message +
-  //       "\nREASON: " +
-  //       error.reason +
-  //       " (att: " +
-  //       error.attErrorCode +
-  //       ", ios: " +
-  //       error.iosErrorCode +
-  //       ", and: " +
-  //       error.androidErrorCode +
-  //       ")"
-  //   );
-  // };
-  //
-  // delay = () => {
-  //   return new Promise((resolve, reject) => {
-  //     setTimeout(() => {
-  //       resolve();
-  //     }, 5000);
-  //   });
-  // };
+
+  componentDidMount() {
+    const manager = new BleManager();
+    searchDevice = () =>{
+      manager.onStateChange(newState => {
+        if (newState != "PoweredOn") return;
+        this._log("Started scanning...");
+        manager.startDeviceScan(
+          null,
+          {
+            allowDuplicates: false
+          },
+          (error, device) => {
+            if (error) {
+              this._logError("SCAN", error);
+              return;
+            }
+            this._log(device.name,device.id, device);
+          }
+        );
+      }, true);
+    }
+    connDevice = (item) =>{
+      manager.stopDeviceScan();
+      manager.connectToDevice(item)
+      .then((device) => {
+          return device.discoverAllServicesAndCharacteristics()
+      })
+      .then((device) => {
+        device.isConnected().then((res)=>alert(res))
+      })
+      .catch((error) => {
+          // Handle errors
+      });
+    }
+  }
+
+  _log = (name: string, id: string, ...args) => {
+    const message = {
+      name: name,
+      id: id,
+    };
+    this.setState({
+      text: [message, ...this.state.text]
+    });
+  };
+
+  _logError = (tag: string, error: BleError) => {
+    this._log(
+      tag +
+        "ERROR(" +
+        error.errorCode +
+        "): " +
+        error.message +
+        "\nREASON: " +
+        error.reason +
+        " (att: " +
+        error.attErrorCode +
+        ", ios: " +
+        error.iosErrorCode +
+        ", and: " +
+        error.androidErrorCode +
+        ")"
+    );
+  };
+
+  delay = () => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      }, 5000);
+    });
+  };
 
   render() {
     return (
-      <SafeAreaView
+      <View
         style={styles.container}
       >
         <Button
@@ -103,13 +122,27 @@ export default class App extends Component<Props, State> {
           }}
           title={"Clear"}
         />
-        <FlatList
-          style={styles.container}
-          data={this.state.text}
-          renderItem={({ item }) => <Text> {item} </Text>}
-          keyExtractor={(item, index) => index.toString()}
+        <Button
+          onPress={() => {
+            searchDevice()
+          }}
+          title={"Buscar"}
         />
-      </SafeAreaView>
+          <FlatList
+            style={styles.container}
+            data={this.state.text}
+            renderItem={({ item }) => (
+          <ListItem
+          onPress={() => {
+            connDevice(item.id)
+          }}
+            title={item.name}
+            subtitle={item.id}
+          />
+        )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+      </View>
     );
   }
 }
